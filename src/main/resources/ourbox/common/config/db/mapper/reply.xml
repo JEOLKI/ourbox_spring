@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reply">
+
+	<select id="replyList" resultType="replyVO" parameterType="int">
+		SELECT * FROM REPLY WHERE BOARD_SEQ = ${board_seq} ORDER BY REPLY_DATE ASC
+	</select>
+	
+	
+	<!-- 댓글 insert하기 -->
+	<insert id="insertReply" parameterType="replyVO">
+		INSERT INTO REPLY
+		(
+			REPLY_SEQ,
+			REPLY_CONTENT,
+			REPLY_DATE,
+			BOARD_SEQ,
+			MEM_ID
+		)
+		VALUES 
+		(
+			reply_seq.nextval,
+			${reply_content},
+			sysdate,
+			${board_seq},
+			${mem_id}
+			
+		)
+		<selectKey keyProperty="reply_seq" resultType="int">
+			SELECT REPLY_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+	
+	
+	<!-- 댓글을 삭제하기 -->
+	<delete id="deleteReply" parameterType="int">
+		DELETE FROM REPLY WHERE REPLY_SEQ = ${reply_seq}
+	</delete>
+	
+	
+	<!-- 답변을 수정하기 -->
+	<update id="updateReply" parameterType="replyVO">
+		UPDATE REPLY SET REPLY_CONTENT=${reply_content}
+		WHERE REPLY_SEQ = ${reply_seq}
+	</update>
+  	
+</mapper>		
+
+
+
+
+

@@ -76,6 +76,71 @@
 		})
 	})
 
+var boardPageList = function(cpage) {
+	$.ajax({
+		url : '/ourbox/board/list',
+		type : 'get',
+		data : { "page" : cpage, 
+				"room_seq" : room_seq},
+		dataType : 'json',
+		success : function(res) {
+			
+			$('#boardList').empty();
+			
+			code = "<table class='list'>"
+			code += "  <tr id='tr1'>"
+			code += "    <td id='titleTd'>제목</td>"
+			code += "    <td id='writerTd'>작성자</td>"
+			code += "	 <td id='dateTd'>작성일자</td>"
+			code += "  </tr>"
+				
+			$.each(res.boardList, function(i, v) {
+				code += "  <tr class='trtab'>"
+				code += "    <td class='board_title' seq='"+ v.board_seq +"'>"+v.board_title+"</td>"
+				code += "    <td>"+v.mem_id+"</td>"
+				code += "	 <td>"+v.board_date+"</td>"
+				code += "  </tr>"
+				
+			})
+			code += "</table>"
+				
+			$('#boardList').append(code);
+			
+			totalpage = res.tpage;
+			startpage = res.spage;
+			endpage = res.epage;
+			currentpage = res.cpage;
+			
+			//이전 버튼 출력
+			$('#btngroup1').empty();
+			
+			pager = "";
+			if ( startpage > 1 ) {
+				pager += '  <span class="previous"><a href="#">Previous</a></span>&nbsp;&nbsp;&nbsp;&nbsp;';
+			}
+			
+			//페이지 번호 출력
+			for (i = startpage ; i <= endpage; i++) {
+				
+				if (currentpage == i) {
+					pager += '<a class="paging" href="#">'+i+'</a>&nbsp;&nbsp;';
+				}else {
+					pager += '<a href="#" class="paging">'+i+'</a>&nbsp;&nbsp;';
+				}
+			}
+			
+			//다음버튼 출력
+			if(endpage < totalpage) {
+				pager += '  <span class="next" ><a href="#">Next</a></span>';
+			}
+			
+			$(pager).appendTo('#btngroup1');
+			
+		}
+		
+	})	
+	
+}
 	
 </script>
 

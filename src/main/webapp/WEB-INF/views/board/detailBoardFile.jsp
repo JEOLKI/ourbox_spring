@@ -47,9 +47,7 @@
 		
 		// 목록으로 버튼 누르면
 		$('.backlist').on('click', function() {
-			
 			location.href="/ourbox/board/view?memId="+logId+"&roomSeq="+room_seq+"";
-			
 		})
 		
 		//답변 등록버튼 클릭하면
@@ -98,7 +96,6 @@
 			
 		})
 	
-	
 		// 답변수정후 등록버튼 클릭하면
 		$('#boardList').on('click', '.insertUpdate', function() {
 			
@@ -120,30 +117,70 @@
 		
 		// 삭제버튼 누르면
 		$('#deleteBoard').on('click', function() {
-		
 			deleteBoard(board_seq);
-			
 		})
-		
 		
 		// 글 수정 버튼을 누르면
 		$('#updateBoard').on('click', function() {
-			
 			location.href = '/ourbox/UpdateBoardController?logId='+logId+'&mem_id='+mem_id+'&room_seq='+room_seq+'&board_seq='+board_seq+'&board_title='+board_title+'&board_content='+board_content+''
-			
 		})
 		
 		$('#print').on('click', function() {
-			
 			$('.contextmenu').hide();
 			window.print();
 			$('.contextmenu').show();
-			
 		})
 		
 		
 	})
+
+var replyList = function(board_seq) {
+	$.ajax({
+		url : '/ourbox/ReplyListController',
+		data : {"board_seq" : board_seq},
+		type : 'get',
+		dataType : 'json',
+		success : function(data) {
+			
+			code = "<table class='replyTable'>"
+			$.each(data.replyList, function(i, v) {
+				code += "  <tr>"
+				code += "    <td class='replyMem' rowspan='2'>"+v.mem_id+"</td>"
+				code += "    <td class='replyDate'>"+v.reply_date+"</td>"
+				code += "    <td class='butgroup2' rowspan='2'>"
+						
+						if( v.mem_id == logId ){
+							
+							code += "<button class='updateReply' seq='"+v.reply_seq+"' " +
+							"				qna='"+v.board_seq+"' type='button'>수 정</button>"
+							code += "<button class='insertUpdate' id='insertUpdate"+v.reply_seq+"' seq='"+v.reply_seq+"' " +
+							"				qna='"+v.board_seq+"' type='button'>등 록</button><br>"
+							code += "<button class='deleteReply' seq='"+v.reply_seq+"' " +
+							"				qna='"+v.board_seq+"' type='button'>삭 제</button>"
+						}
+				
+				code += "    </td>"
+				code += "  </tr>"
+				code += "  <tr>"
+				code += "    <td class='replyContent' id='"+v.reply_seq+"' colspan='4'>"+v.reply_content+"</td>"
+				code += "  </tr>"
+						
+			})
+			
+			code += "</table>"
+				
+			$('#replyList').empty();
+			$('#replyList').append(code);
+			
+			
+			
+		},
+		error : function(xhr) {
+			alert("상태11 : " + xhr.status)
+		}
+	})
 	
+}
 
 </script>
 

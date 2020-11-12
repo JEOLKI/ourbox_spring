@@ -14,14 +14,9 @@ import ourbox.common.vo.BoardVO;
 
 @Service("boardService")
 public class BoardServiceImpl implements IBoardService {
-
 	
 	@Resource(name="boardRepository")
 	private IBoardDao boardDao;
-	
-	public static IBoardService getInstance() {
-		return new BoardServiceImpl();
-	}
 
 	@Override
 	public List<BoardVO> selectPage(Map<String, Integer> map) {

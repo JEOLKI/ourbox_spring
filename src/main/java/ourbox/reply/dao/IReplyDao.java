@@ -12,7 +12,7 @@ public interface IReplyDao {
 	 * @param board_seq 댓글을 가져올 게시글의 번호
 	 * @return 해당하는 번호의 게시글의 댓글목록
 	 */
-	public List<ReplyVO> replyList(int board_seq) throws SQLException;
+	public List<ReplyVO> replyList(int board_seq);
 	
 	
 	/**
@@ -20,7 +20,7 @@ public interface IReplyDao {
 	 * @param reply 등록할 정보를 갖는 객체
 	 * @return 작업성공 : 1 , 작업실패 : 0
 	 */
-	public int insertReply(ReplyVO reply) throws SQLException;
+	public int insertReply(ReplyVO reply);
 	
 	
 	/**
@@ -28,7 +28,7 @@ public interface IReplyDao {
 	 * @param reply_seq 삭제할 댓글의 번호
 	 * @return 작업성공 : 1, 작업실패 : 0
 	 */
-	public int deleteReply(int reply_seq) throws SQLException;
+	public int deleteReply(int reply_seq) ;
 	
 	
 	/**
@@ -36,7 +36,7 @@ public interface IReplyDao {
 	 * @param reply 수정할 정보를 담은 댓글 객체
 	 * @return 작업성공 : 1, 작업실패 : 0
 	 */
-	public int updateReply(ReplyVO reply) throws SQLException;
+	public int updateReply(ReplyVO reply) ;
 	
 	
 }

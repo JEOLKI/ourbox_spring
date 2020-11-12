@@ -8,12 +8,13 @@
 		<typeAlias type="ourbox.common.vo.MemberVO" alias="memberVO"/>
 		<typeAlias type="ourbox.common.vo.BoardVO" alias="boardVO"/>
 		<typeAlias type="ourbox.common.vo.AtchFileVO" alias="atchFileVO"/>
+		<typeAlias type="ourbox.common.vo.ReplyVO" alias="replyVO"/>
 	</typeAliases>
 
 	<mappers>
 		<mapper resource="ourbox/common/config/db/mapper/member.xml" />
 		<mapper resource="ourbox/common/config/db/mapper/board.xml" />
-		<mapper resource="ourbox/common/config/db/mapper/atchFile.xml" />
+		<mapper resource="ourbox/common/config/db/mapper/reply.xml" />
 	</mappers>
 
 </configuration>

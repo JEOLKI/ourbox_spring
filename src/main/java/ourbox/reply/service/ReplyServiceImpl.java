@@ -1,79 +1,38 @@
 package ourbox.reply.service;
 
-import java.sql.SQLException;
 import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
 
 import ourbox.common.vo.ReplyVO;
 import ourbox.reply.dao.IReplyDao;
-import ourbox.reply.dao.ReplyDaoImpl;
 
+@Service("replyService")
 public class ReplyServiceImpl implements IReplyService {
 	
+	@Resource(name = "replyRepository")
 	private IReplyDao replyDao;
 	
-	private static IReplyService replyService;
-	
-	private ReplyServiceImpl() {
-		replyDao = ReplyDaoImpl.getInstance();
-	}
-	
-	public static IReplyService getInstance() {
-		if (replyService == null) replyService = new ReplyServiceImpl();
-		
-		return replyService;
-	}
-
 	@Override
 	public List<ReplyVO> replyList(int board_seq) {
-		
-		List<ReplyVO> replyList = null;
-		
-		try {
-			replyList = replyDao.replyList(board_seq);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return replyList;
+		return replyDao.replyList(board_seq);
 	}
 
 	@Override
 	public int insertReply(ReplyVO reply) {
-		int count = 0;
-		
-		try {
-			count = replyDao.insertReply(reply);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return count;
+		return replyDao.insertReply(reply);
 	}
 
 	@Override
 	public int deleteReply(int reply_seq) {
-		int count = 0;
-		
-		try {
-			count = replyDao.deleteReply(reply_seq);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return count;
+		return replyDao.deleteReply(reply_seq);
 	}
 
 	@Override
 	public int updateReply(ReplyVO reply) {
-		int count = 0;
-		
-		try {
-			count = replyDao.updateReply(reply);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return count;
+		return replyDao.updateReply(reply);
 	}
 	
 	

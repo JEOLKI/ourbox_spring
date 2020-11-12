@@ -2,6 +2,9 @@ package ourbox.common.vo;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="replyVO")
 public class ReplyVO {
 	
 	private int reply_seq;
@@ -40,6 +43,14 @@ public class ReplyVO {
 	public void setBoard_seq(int board_seq) {
 		this.board_seq = board_seq;
 	}
+	
+	@Override
+	public String toString() {
+		return "ReplyVO [reply_seq=" + reply_seq + ", mem_id=" + mem_id + ", reply_content=" + reply_content
+				+ ", reply_date=" + reply_date + ", board_seq=" + board_seq + "]";
+	}
+	
+	
 	
 	
 }
