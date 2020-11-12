@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- namespace속성 : 아래에서 작성한 SQL을 호출할때 같이 사용된다. -->
+<sqlMap namespace="atchFile">
+	
+	<insert id="insertAtchFile" parameterClass="atchFileVO">
+	
+		<selectKey keyProperty="atch_file_seq" resultClass="int">
+		   select atatchedfile_seq.nextval from dual
+		</selectKey>
+		
+		insert into ATATCHEDFILE
+		(
+		ATCH_FILE_SEQ,
+		ATCH_FILE_NAME,
+		ATCH_FILE_PATH
+		)
+		values 
+		(
+		#atch_file_seq#,
+		#atch_file_name#,
+		#atch_file_path#
+		)
+		
+	</insert>
+	
+	<select id="selectAtchFile" resultClass="atchFileVO">
+		
+		SELECT * FROM ATATCHEDFILE
+		WHERE ATCH_FILE_SEQ = #atch_file_seq#
+		
+	</select>
+  	
+</sqlMap>			
+
+
+
+
+

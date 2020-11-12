@@ -1,0 +1,91 @@
+@charset "UTF-8";
+
+	#driveMenu {
+		margin : 3%;
+		min-width: 1000px;
+	
+	}
+	
+	.driveBox{
+		min-width: 1000px;
+		padding : 10px;
+	}
+	
+	#form{
+		margin-left : 15%;
+		display: inline;
+		position: absolute;
+		left : 570px;
+	}
+	
+	.drive{
+		dispaly: none;
+		margin : 10px;
+	}
+	
+	.file{
+/* 		background: skyblue;	 */
+		margin : 10px;
+	}
+	tr{
+		width:50px;
+		height : 30px;
+/* 		background: red; */
+		text-overflow: ellipsis;
+	}
+	
+	img{
+		width: 70px;
+		height: 70px;
+		display : inline;
+	}
+	.driveName{
+		overflow:hidden;
+		white-space : nowrap;
+		text-overflow: ellipsis;
+/* 		font-size : 0.9em; */
+		max-width: 70px;
+		max-height : 50px;
+		vertical-align: top;
+	}
+	table{
+		display: inline-block;
+		align-content : center;
+		text-overflow: ellipsis;
+		margin : 15px;
+		margin-bottom : 30px;
+		text-align: center;
+		table-layout: fixed;
+	}
+	.typeImg{
+		display : inline;
+		width: 30px;
+		height: 30px;
+	}
+	.btn{
+		display : inline;
+		height: 23px;
+		vertical-align: top;
+	}
+	#download{
+		position : absolute;
+		right : 75px;
+		display : inline;
+		margin-left: 20%;
+	}
+	
+	#deleteDrive{
+		position : absolute;
+		right : 31px;
+	}
+	
+	input[type=text]{
+		width: 200px;
+		height: 23px;
+		border: 1px solid #CFCFCF;
+		border-radius: .25em;
+		position : relative;
+		top : -1px;
+	}
+	
+

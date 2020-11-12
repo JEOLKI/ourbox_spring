@@ -1,0 +1,176 @@
+@charset "UTF-8";
+
+	.insertUpdate{
+		display: none;
+	}
+	
+	#qnaList{
+		min-width: 1400px;
+	}
+	
+	#menuBox{
+		float: right;
+	}
+	
+	img{
+		width: 30px;
+		height: 30px;
+		margin-right: 10px;
+	}
+	
+	#tr1{
+		background: #E6E8E8;
+	}
+	
+	#tr2 {
+		background: #E6E8E8;
+	}
+	
+	.list td{
+		height: 40px;
+		border-bottom: 1px solid #E6E6E6;
+	}
+	
+	.list, #contentTable{
+		text-align: center;
+		border-top: 1px solid #A4A4A4;
+		border-bottom: 1px solid #A4A4A4;
+		border-collapse: collapse;
+	}
+	
+	#contentTable td{
+		border-bottom: 1px solid #E6E6E6;
+	}
+	
+	#qna_content, #qna_title{
+		text-align: left;
+	}
+	
+	.tdMenu{
+		width: 100px;
+		height: 40px;
+	}
+	
+	#titleTd {
+		width: 700px;
+	}
+	
+	#writerTd {
+		width: 400px;
+	}
+	
+	#dateTd {
+		width: 400px;
+	}
+	
+	#btngroup1{
+		text-align: center;
+	}
+	
+	a:link, a:visited{
+ 		text-decoration: none;
+ 		color: black;
+ 		font-weight: bold;
+ 	}
+	
+	.trtab:hover{
+		background: #F6F6F6;
+	}
+	
+	#qna_title{
+		width: 700px;
+	}
+	
+	#writer{
+		width: 200px;
+	}
+	
+	#date{
+		width: 200px;
+	}
+	
+	#qna_content{
+		height: 250px;
+		vertical-align: top;
+		padding-top: 10px;
+	}
+	
+	.content, .butgroup2{
+		padding-top: 4px;
+		vertical-align: top;
+	}
+	
+	.answerTable{
+		text-align: left;
+	}
+	
+	.answerMana{
+		width: 100px;
+		vertical-align: top;
+		padding-top: 9px;
+	}
+	
+	.answerContent{
+		width: 1200px;
+	}
+	
+	.butgroup2{
+		width: 100px;
+	}
+	
+	#answerContent{
+		border: none;
+		display: inline-block;
+		width: 92%;
+		height : 73px; 
+		padding: 1.1em;
+		vertical-align: middle;
+	}
+	
+	#insertAnswer{
+		padding-top: 10px;
+		vertical-align: top;
+		height: 100px;
+		width: 60px;
+	}
+	
+	#butgrp3, #but{
+		float: right;
+	}
+	
+	.textareaContent {
+		margin-top: 10px;
+		border: none;
+		vertical-align: top;
+		height: 400px;
+		width: 80%;
+	}
+	
+		td{
+		height: 40px;
+	}
+	
+	#inputTd{
+		width: 80%;
+	}
+	
+	.inputTitle{
+		border: none;
+		width: 80%;
+		vertical-align: middle;
+		height: 40px;
+	}
+	
+	#firstLine, .inputTitle{
+		background: lightgray;
+	}
+	
+	#conTd{
+		margin-top: 10px;
+	}	
+	
+	.content{
+		padding-top: 10px;
+		vertical-align: top;
+	}
+	

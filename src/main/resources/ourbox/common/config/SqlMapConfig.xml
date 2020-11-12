@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- 
+	DB와 연결하는 정보를 properties파일에 설정해 놓고 이 properties파일의
+	내용을 읽어와 설정한다.
+	 -->
+	<properties resource="ourbox/common/config/SqlMapConfig.properties" />
+	
+	<!-- ibatis를 처리하기 위한 환경설정 부분 -->
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+
+	<!-- 
+	VO클래스등의 이름이 패키지명까지 기술하면 길어지는데 이것을 간단히
+	표시하기 위해서 alias를 지정할 수 있다.
+	형식) <typeAlias alias="alias명" type="클래스의 풀네임"/>
+	 -->
+	<typeAlias alias="boardVO" type="ourbox.common.vo.BoardVO"/>
+	<typeAlias alias="memberVO" type="ourbox.common.vo.MemberVO"/>
+	<typeAlias alias="qnaVO" type="ourbox.common.vo.QnaVO"/>
+	<typeAlias alias="driveVO" type="ourbox.common.vo.DriveVO"/>
+	<typeAlias alias="planVO" type="ourbox.common.vo.PlanVO"/>
+	<typeAlias alias="useVO" type="ourbox.common.vo.UseVO"/>
+	<typeAlias alias="planuseVO" type="ourbox.common.vo.PlanUseVO"/>
+	<typeAlias alias="noticeVO" type="ourbox.common.vo.NoticeVO"/>
+	<typeAlias alias="memoVO" type="ourbox.common.vo.MemoVO"/>
+	<typeAlias alias="answerVO" type="ourbox.common.vo.AnswerVO"/>
+	<typeAlias alias ="ChatVO" type="ourbox.common.vo.ChatVO"/>
+	<typeAlias alias="replyVO" type="ourbox.common.vo.ReplyVO"/>
+	<typeAlias alias="atchFileVO" type="ourbox.common.vo.AtchFileVO"/>
+	<typeAlias alias="roomVO" type="ourbox.common.vo.RoomVO"/>
+	<typeAlias alias="enterVO" type="ourbox.common.vo.EnterVO"/>
+	<typeAlias alias="alarmVO" type="ourbox.common.vo.AlarmVO"/>
+	<typeAlias alias="managerVO" type="ourbox.common.vo.ManagerVO"/>
+
+	<!-- 
+	DB와의 연결을 처리하는 부분
+	SqlMapConfig.properties에 설정해 놓은 정보를 이용하여 구성한다.
+	 -->
+	<transactionManager type="JDBC">
+		<dataSource type="SIMPLE">
+		<!--
+			각종 설정을 직접 기술해서 처리할 수도 있다. 
+			<property name="JDBC.Driver" value="oracle.jdbc.driver.OracleDriver" />
+		 -->
+			<property name="JDBC.Driver" value="${driver}" />
+			<property name="JDBC.ConnectionURL" value="${url}" />
+			<property name="JDBC.Username" value="${username}" />
+			<property name="JDBC.Password" value="${password}" />
+			<property name="Pool.MaximumActionConnections" value="2"/>
+			<property name="Pool.MaximumIdleConnections" value="2"/>
+
+			
+		</dataSource>
+	</transactionManager>
+	
+	<!-- 
+	실제 처리할 SQL문은 xml문서로 따로 만든 후
+	그 xml문서와 아래와 같이 연결하여 사용한다.
+	형식) <sqlMap resource="경로명/파일명.xml"/> 
+	-->
+	<sqlMap resource="ourbox/common/mapper/board.xml"/>
+	<sqlMap resource="ourbox/common/mapper/drive.xml"/>
+	<sqlMap resource="ourbox/common/mapper/member.xml"/>
+	<sqlMap resource="ourbox/common/mapper/notice.xml"/>
+	<sqlMap resource="ourbox/common/mapper/answer.xml"/>
+	<sqlMap resource="ourbox/common/mapper/qna.xml"/>
+	<sqlMap resource="ourbox/common/mapper/atchFile.xml"/>
+	<sqlMap resource="ourbox/common/mapper/reply.xml"/>
+	<sqlMap resource="ourbox/common/mapper/memo.xml"/>
+	<sqlMap resource="ourbox/common/mapper/chat.xml"/>
+	<sqlMap resource="ourbox/common/mapper/plan.xml"/>
+	<sqlMap resource="ourbox/common/mapper/planuse.xml"/>
+	<sqlMap resource="ourbox/common/mapper/room.xml"/>
+	<sqlMap resource="ourbox/common/mapper/alarm.xml"/>
+	
+</sqlMapConfig>
+
+
+
+
+
+

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="notice">
+	
+	<!-- noticeList가져오기  -->
+	<select id="noticeList" resultClass="noticeVO">
+		SELECT * FROM NOTICE ORDER BY NOTICE_SEQ DESC
+	</select>
+	
+	<!-- 공지 insert하기 -->
+	<insert id="insertNotice" parameterClass="noticeVO">
+		INSERT INTO NOTICE
+		(
+			NOTICE_SEQ,
+			NOTICE_TITLE,
+			NOTICE_CONTENT,
+			NOTICE_DATE,
+			MANAGER_ID
+		)
+		VALUES 
+		(
+			notice_seq.nextval,
+			#notice_title#,
+			#notice_content#,
+			sysdate,
+			'ourbox'
+		)
+		<selectKey keyProperty="notice_seq" resultClass="int">
+			SELECT NOTICE_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<!-- 공지 검색하기 -->	
+	<select id="searchNotice" resultClass="noticeVO" parameterClass="noticeVO">
+	
+		SELECT * FROM NOTICE WHERE 1=1
+	
+		<isNotEmpty property="notice_title">
+		AND NOTICE_TITLE LIKE '%' || #notice_title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty property="notice_content">
+		AND NOTICE_CONTENT LIKE '%' || #notice_content# || '%' 
+		</isNotEmpty>
+		
+		ORDER BY NOTICE_SEQ DESC
+	
+	</select>
+	
+	<!-- 해당하는 번호의 notice가져오기 -->
+	<select id="detailNotice" resultClass="noticeVO" parameterClass="int">
+	
+		SELECT * FROM NOTICE WHERE NOTICE_SEQ = #notice_seq#
+		
+	</select>
+	
+	<!-- notice객체를 삭제하기 -->
+	<delete id="deleteNotice" parameterClass="int">
+		DELETE FROM NOTICE WHERE NOTICE_SEQ = #notice_seq#
+	</delete>
+		
+	<!-- notice객체 수정하기 -->	
+	<update id="updateNotice" parameterClass="noticeVO">
+		UPDATE NOTICE SET NOTICE_TITLE=#notice_title#, NOTICE_CONTENT=#notice_content#
+		WHERE NOTICE_SEQ = #notice_seq#
+	</update>
+	
+	<!-- 해당페이지의 notice객체들 가져오기 -->
+	<select id="selectPage" parameterClass="map" resultClass="noticeVO">
+	
+		select A.* from ( select rownum as rnaum, B.* 
+							from ( select * from notice order by notice_seq desc ) B
+										 <![CDATA[
+										where rownum <= #end# ) A
+										where rnaum >= #start#
+										]]>
+	</select>
+		
+	<!-- notice의 갯수 가져오기 -->
+	<select id="getTotalCount" resultClass="int">
+		select count(*) from notice
+	</select>
+	
+	
+	
+</sqlMap>			
+
+
+
+
+

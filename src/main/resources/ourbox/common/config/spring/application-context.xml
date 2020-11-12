@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- kr.or.ddit 패키지 하위의 클래스중 @Controller 어노테이션이 붙은 클래스를
+		 스캔하여 스프링 빈으로 생성 -->
+	
+	<context:component-scan base-package="ourbox" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+	
+	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+	<bean id="DownloadView" class="ourbox.common.view.fileDownloadView"/>
+
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="1"></property>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- prefix : 접두어 , suffix : 접미어 
+			 Controller가 리턴하는 문자열에 prefix, suffix를 적용하여 해당 경로의 파일로
+			 응답을 생성
+			 LoginController.getview() => "login/view"
+			 
+			 	prefix				viewname	suffix
+			 "/WEB-INF/views/" + "login/view" + ".jsp" 
+			 => "/WEB-INF/views/login/view.jsp" 
+			 -->
+		<!-- 파일이 없어도 무조건 보내기때문에 우선순위를 마지막으로 항상 설정한다. -->	 
+		<property name="order" value="2"/>
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!-- @Controller, @RequestMapping, 
+		 HandlerMapping, HandlerAdapter,
+		 formatting conversion service 등, validation 
+		 spring mvc 패턴에 필요한 어노테이션, 엘레멘트 처리 -->
+	<mvc:annotation-driven/>
+	
+	<!-- spring container가 처리하지 못하는 요청에 대해
+		 server에 등록된 default servlet에게 위임 -->
+	<mvc:default-servlet-handler/>
+
+	
+	<!-- 파일 업로드 처리를 위한 multipartResolver 설정 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</bean>
+	
+
+
+
+
+
+	
+	
+</beans>

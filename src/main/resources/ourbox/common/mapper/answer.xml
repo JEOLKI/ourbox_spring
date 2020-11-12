@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="answer">
+
+	<!-- 해당하는 QNA번호의 answerlist 가져오기  -->
+	<select id="answerList" resultClass="answerVO" parameterClass="int">
+		SELECT * FROM ANSWER WHERE QNA_SEQ = #qna_seq# ORDER BY ANS_DATE DESC
+	</select>
+	
+	
+	<!-- 답변 insert하기 -->
+	<insert id="insertAnswer" parameterClass="answerVO">
+		INSERT INTO ANSWER
+		(
+			ANS_SEQ,
+			ANS_CONTENT,
+			ANS_DATE,
+			MANAGER_ID,
+			QNA_SEQ
+		)
+		VALUES 
+		(
+			answer_seq.nextval,
+			#ans_content#,
+			sysdate,
+			'ourbox',
+			#qna_seq#
+			
+		)
+		<selectKey keyProperty="ans_seq" resultClass="int">
+			SELECT ANSWER_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+	
+	
+	<!-- 답변을 삭제하기 -->
+	<delete id="deleteAnswer" parameterClass="int">
+		DELETE FROM ANSWER WHERE ANS_SEQ = #ans_seq#
+	</delete>
+	
+	<!-- 답변을 수정하기 -->
+	<update id="updateAnswer" parameterClass="answerVO">
+		UPDATE ANSWER SET ANS_CONTENT=#ans_content#
+		WHERE ANS_SEQ = #ans_seq#
+	</update>
+
+
+</sqlMap>

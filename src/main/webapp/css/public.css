@@ -1,0 +1,56 @@
+@charset "UTF-8";
+
+
+body {
+	font-family:'문제부 돋움체';
+	
+}
+
+.bold {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+#box{
+	margin: 5%
+}
+
+textarea{
+	resize: none;
+	
+}
+
+.sizeUp{
+	font-size: 1.3em;
+}
+
+::-webkit-scrollbar {
+   		display: none;
+ }
+  	
+ ::-webkit-scrollbar-thumb {
+    	background-color: #EAEAEA;
+    	border-radius: 10px;
+    	background-clip: padding-box;
+    	border: 2px solid transparent;
+ }
+ 	
+ ::-webkit-scrollbar-track {
+    	background-color: #EAEAEA;
+    	border-radius: 10px;
+    	box-shadow: inset 0px 0px 5px #EAEAEA;
+   }
+
+
+/* 
+영어 한글 글씨체 따로주는것 확인하기
+
+body {font-family:'문제부 돋움체';}
+
+@font-face {
+    font-family: 'Arial';
+    
+    unicode-range:U+0041-005A, U+0061-007A, U+0030-0039;
+} */
+
+

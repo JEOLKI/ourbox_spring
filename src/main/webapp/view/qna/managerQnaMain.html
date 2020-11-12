@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ourbox : QnA게시판 관리</title>
+
+<link rel="stylesheet" href="/ourbox/css/public.css">
+<script src="/ourbox/js/jquery-3.5.1.min.js"></script>
+<script src="/ourbox/js/qnaAnswer.js"></script>
+<link rel="stylesheet" href="/ourbox/css/qna.css">
+
+<script type="text/javascript">
+
+	$(function() {
+		
+		ManagerQnaPageList(1)
+		
+		// 페이지 번호 클릭 하면 이벤트 설정
+		$('#btngroup1').on('click','.paging', function() {
+			
+			currentpage = $(this).text().trim();
+			ManagerQnaPageList(currentpage);
+			
+		})
+		
+		// 이전버튼 클릭하면
+		$('#btngroup1').on('click','.previous a', function() {
+
+			currentpage = parseInt($('.paging:first').text().trim())-1;
+			ManagerQnaPageList(currentpage);
+			
+		})
+		
+		// 다음버튼 클릭하면
+		$('#btngroup1').on('click','.next a', function() {
+
+			currentpage = parseInt($('.paging:last').text().trim()) + 1;
+			ManagerQnaPageList(currentpage);
+			
+		})
+		
+		// 제목을 클릭하면 
+		$('#qnaList').on('click','.qna_title',function() {
+			
+			qna_seq = $(this).attr('seq');
+			
+			detailQna(qna_seq);
+			
+			$('#menuBox').hide();
+			$('#btngroup1').hide();
+				
+		})
+		
+		// 목록으로 버튼 클릭하면
+		$('#qnaList').on('click', '.backlist', function() {
+			
+			location.href="managerQnaMain.html"
+			
+		})
+		
+		// 검색버튼 클릭하면
+		$('#searchQna').on('click', function(){
+			
+			searchOption = $('#selectBox option:selected').val();
+			searchKeyWord = $('#searchKeyWord').val();
+			
+			searchElement = { 
+								"searchOption" : searchOption,
+							 	"searchKeyWord" : searchKeyWord
+							}
+			
+			searchQna(searchElement);
+			
+			$('#btngroup1').hide();
+			
+		})
+		
+		// 답변 등록버튼 클릭하면
+		$('#qnaList').on('click', '#insertAnswer', function() {
+			
+			qna_seq = $(this).attr('seq');
+			answerContent = $('#answerContent').val();
+			
+			answer = {
+						"qna_seq" : qna_seq,
+						"answerContent" : answerContent
+					}
+			
+			insertAnswer(answer);
+			
+			$('#answerContent').val("");
+		})
+		
+		// 답변의 삭제버튼을 클릭하면
+		$('#qnaList').on('click', '.deleteAnswer', function() {
+			
+			ans_seq = $(this).attr('seq');
+			qna_seq = $(this).attr('qna');
+			
+			deleteAnswer(ans_seq);
+			
+			
+		})
+		
+		// 답변의 수정버튼을 클릭하면
+		$('#qnaList').on('click', '.updateAnswer', function() {
+			
+			qna_seq = $(this).attr('qna');
+			ans_seq = $(this).attr('seq');
+			
+			$(this).hide();
+			$('#insertUpdate'+ans_seq+'').show();
+			
+			content = $('#'+ans_seq+'').html().replace(/<br>/g, "\n");
+			
+			code = "<textarea id='newAnswer' rows='5' cols='30'>"+content+"</textarea>"
+			
+			$('#'+ans_seq+'').empty();
+			$('#'+ans_seq+'').append(code);
+			
+		})
+		
+		// 답변 수정후 등록
+		$('#qnaList').on('click', '.insertUpdate', function() {
+			
+			qna_seq = $(this).attr('qna');
+			ans_seq = $(this).attr('seq');
+			
+			ans_content = $('#newAnswer').val();
+			
+			console.log(ans_content)
+			
+			answer = {
+						"qna_seq" : qna_seq,
+						"ans_content" : ans_content,
+						"ans_seq" : ans_seq
+						}
+			
+			insertUpdate(answer);
+			
+		})
+		
+		
+		
+		
+		
+		
+		
+	})
+
+</script>
+
+
+<style type="text/css">
+
+
+
+
+
+</style>
+
+
+</head>
+<body>
+	
+	<div id="box">
+	
+		<h1><img alt="관리자 Qna아이콘.png" src="/ourbox/images/관리자 Qna아이콘.png">QnA 게시판 관리</h1>
+	
+	
+		<div id="menuBox">
+		<select id="selectBox">
+			<option>글제목만</option>
+			<option>글내용만</option>
+			<option>글제목 + 내용</option>
+			<option>작성자</option>
+		</select>
+		 
+		<input id="searchKeyWord" type="text" value="">
+		<button id="searchQna" type="button">검색</button>
+		
+		</div>
+		
+		<br><br>
+		
+		<div id="qnaList">
+		
+		
+		</div>
+		
+		<br>
+		<div id="btngroup1"></div>
+
+	</div>
+
+
+</body>
+</html>

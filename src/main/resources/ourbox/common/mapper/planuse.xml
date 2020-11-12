@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="planuse">
+
+
+	<select id="selectPlan" resultClass="planuseVO" parameterClass="String">
+		select b.plan_name, b.plan_price, b.plan_content, b.plan_sto_cap, b.plan_seq, a.use_seq, a.use_start, a.use_status
+		from use a, plan b
+		where a.plan_seq = b.plan_seq
+		and a.mem_id = #mem_id#
+		order by a.plan_seq asc
+	</select>
+	
+	<update id="endPlan" parameterClass="String">
+		update use set use_status = 1 where mem_id=#mem_id#
+	</update>
+
+	<select id="getPlan" parameterClass="String"
+		resultClass="planuseVO">
+		select *
+		from use
+		where mem_id = #mem_id#
+	</select>
+	
+	<insert id="payPlan" parameterClass ="useVO">
+		insert into use(mem_id, plan_seq, use_seq, 
+		use_end, use_start, use_status)
+		values(#mem_id#, #plan_seq#, use_seq.nextval, '1000-01-01', sysdate,'0')
+	</insert>
+
+</sqlMap>

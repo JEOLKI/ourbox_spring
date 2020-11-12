@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="plan">
+	<select id="planlist" resultClass="planVO" >
+		select * from plan where plan_status = 0
+	</select>
+	
+	<insert id="insertPlan" parameterClass ="planVO">
+	insert into plan ( 
+		plan_seq,
+		plan_price,
+		plan_content,
+		plan_sto_cap,
+		plan_status,
+		plan_name 
+		)
+		values (
+		plan_seq.nextval, 
+		#plan_price#, 
+		#plan_content#, 
+		#plan_sto_cap#,
+		 0, 
+		 #plan_name# 
+		 )
+	</insert>
+	
+	<update id="deletePlan" parameterClass="int">
+		update plan set plan_status = 1 where plan_seq = #plan_seq#
+	</update>
+	
+
+</sqlMap>

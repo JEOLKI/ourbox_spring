@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	
+	<!-- 해당페이지의 board객체들 가져오기 -->
+	<select id="selectPage" parameterType="map" resultType="boardVO">
+	
+		select A.* from ( select rownum as rnaum, B.* 
+							from ( select * from board where room_seq = ${room_seq} order by board_seq desc ) B
+										 <![CDATA[
+										where rownum <= ${end} ) A
+										where rnaum >= ${start}
+										]]>
+	</select>
+		
+	<!-- board의 갯수 가져오기 -->
+	<select id="getTotalCount" resultType="int" parameterType="int">
+		select count(*) from board where room_seq = ${room_seq}
+	</select>
+	
+	
+	<!-- board의 세부내용 가져오기 -->
+	<select id="detailBoard" resultType="boardVO" parameterType="int">
+		SELECT * FROM BOARD WHERE BOARD_SEQ = ${board_seq}
+	</select>
+	
+	
+	<!-- 게시글 insert하기 -->
+	<insert id="insertBoard" parameterType="boardVO">
+		INSERT INTO BOARD
+		(
+			BOARD_SEQ,
+			BOARD_TITLE,
+			BOARD_DATE,
+			BOARD_CONTENT,
+			ATCH_FILE_SEQ,
+			ROOM_SEQ,
+			MEM_ID
+		)
+		VALUES 
+		(
+			board_seq.nextval,
+			${board_title},
+			sysdate,
+			${board_content},
+			${atch_file_seq},
+			${room_seq},
+			${mem_id}
+		)
+		<selectKey keyProperty="board_seq" resultType="int">
+			SELECT BOARD_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+	
+	<!-- board를 검색하기 -->
+	<select id="searchBoard" resultType="boardVO" parameterType="boardVO">
+	
+		SELECT * FROM BOARD WHERE 1=1
+		
+		<if test="board_title != null and board_title != '' " >
+		AND BOARD_TITLE LIKE '%' || ${board_title} || '%' 
+		</if>
+		<if test="board_content != null and board_content != '' " >
+		AND BOARD_CONTENT LIKE '%' || ${board_content} || '%' 
+		</if>
+		<if test="mem_id != null and mem_id != '' " >
+		AND MEM_ID = ${mem_id}
+		</if>
+	
+	</select>
+	
+	<!-- 게시글 삭제하기 -->
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM BOARD WHERE BOARD_SEQ = ${board_seq}
+	</delete>
+	
+	<!-- board객체 수정하기 -->	
+	<update id="updateBoard" parameterType="boardVO">
+		UPDATE BOARD SET BOARD_TITLE=${board_title}, BOARD_CONTENT=${board_content}, ATCH_FILE_SEQ=${atch_file_seq}
+		WHERE BOARD_SEQ = ${board_seq}
+	</update>
+	
+	<insert id="insertAtchFile" parameterType="atchFileVO">
+	
+		INSERT INTO ATATCHEDFILE
+		(
+		ATCH_FILE_SEQ,
+		ATCH_FILE_NAME,
+		ATCH_FILE_PATH
+		)
+		VALUES 
+		(
+		atatchedfile_seq.nextval,
+		${atch_file_name},
+		${atch_file_path}
+		)
+		
+		<selectKey keyProperty="atch_file_seq" resultType="int">
+		   select atatchedfile_seq.CURRVAL from dual
+		</selectKey>
+		
+	</insert>
+	
+	<select id="selectAtchFile" resultType="atchFileVO">
+		SELECT * FROM ATATCHEDFILE
+		WHERE ATCH_FILE_SEQ = ${atch_file_seq}
+	</select>
+	
+
+</mapper>

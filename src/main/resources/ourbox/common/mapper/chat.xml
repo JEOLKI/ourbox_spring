@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="chat">
+	<!-- <resultMap class="ourbox.common.vo.ChatVO" id="chatMap">
+		<result property="chatSeq" column="CHAT_SEQ"/>
+		<result property="chatContent" column="CHAT_CONTENT"/>
+		<result property="chatDate" column="CHAT_DATE"/>
+		<result property="roomSeq" column="ROOM_SEQ"/>
+		<result property="memId" column="MEM_ID"/>
+	</resultMap> -->
+
+ 	<!-- 닉네임을 갖고오는 쿼리 -->
+ 	<select id="getNickName" parameterClass="String" resultClass="String">
+ 		SELECT  MEM_NICKNAME
+		FROM    MEMBER
+		WHERE   MEM_ID = #mem_id#
+ 	</select>	
+ 	
+ 	<!-- DB에 하나의 ChatVO 객체를 삽입하는 쿼리 -->
+ 	<insert id="insertChat" parameterClass="ChatVO">
+ 		INSERT INTO CHAT
+ 		VALUES (CHAT_SEQ.NEXTVAL, #chat_content#, SYSDATE, #room_seq#, #mem_id#)
+ 		<selectKey keyProperty="chat_seq" resultClass="int">
+ 			SELECT CHAT_SEQ.CURRVAL FROM DUAL
+ 		</selectKey>
+ 	</insert>
+</sqlMap>			
+

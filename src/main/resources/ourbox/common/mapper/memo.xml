@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="memo">
+	
+	<!-- 해당하는 회원의 메모 목록 가져오기 -->
+	<select id="memoList" resultClass="memoVO" parameterClass="String">
+	
+		SELECT * FROM MEMO WHERE MEM_ID = #mem_id# ORDER BY MEMO_SEQ DESC
+	
+	</select>
+
+	<!-- 메모 insert하기 -->
+	<insert id="insertMemo" parameterClass="memoVO">
+		INSERT INTO MEMO
+		(
+			MEMO_SEQ,
+			MEMO_TITLE,
+			MEMO_CONTENT,
+			MEMO_DATE,
+			MEM_ID
+		)
+		VALUES 
+		(
+			memo_seq.nextval,
+			#memo_title#,
+			#memo_content#,
+			sysdate,
+			#mem_id#
+		)
+		<selectKey keyProperty="memo_seq" resultClass="int">
+			SELECT MEMO_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<!-- 메모  삭제하기 -->
+	<delete id="deleteMemo" parameterClass="int">
+		DELETE FROM MEMO WHERE MEMO_SEQ = #memo_seq#
+	</delete>
+
+	<!-- memo객체 수정하기 -->	
+	<update id="updateMemo" parameterClass="memoVO">
+		UPDATE MEMO SET MEMO_TITLE=#memo_title#, MEMO_CONTENT=#memo_content#
+		WHERE MEMO_SEQ = #memo_seq#
+	</update>
+	
+	<!-- 메모 검색하기 -->	
+	<select id="searchMemo" resultClass="memoVO" parameterClass="memoVO">
+	
+		SELECT * FROM MEMO WHERE 1=1
+	
+		<isNotEmpty property="memo_title">
+		AND MEMO_TITLE LIKE '%' || #memo_title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty property="memo_content">
+		AND MEMO_CONTENT LIKE '%' || #memo_content# || '%' 
+		</isNotEmpty>
+		
+		ORDER BY MEMO_SEQ DESC
+	
+	</select>
+
+
+
+
+
+</sqlMap>

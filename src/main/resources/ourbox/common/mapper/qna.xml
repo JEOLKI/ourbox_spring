@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="qna">
+
+	<!-- 해당페이지의 qna객체들 가져오기 -->
+	<select id="selectPage" parameterClass="map" resultClass="qnaVO">
+	
+		select A.* from ( select rownum as rnaum, B.* 
+							from ( select * from qna order by qna_seq desc ) B
+										 <![CDATA[
+										where rownum <= #end# ) A
+										where rnaum >= #start#
+										]]>
+	</select>
+		
+	<!-- qna의 갯수 가져오기 -->
+	<select id="getTotalCount" resultClass="int">
+		select count(*) from qna
+	</select>
+
+	
+	<!-- 해당하는 번호의 qna를 가져오기 -->
+	<select id="detailQna" resultClass="qnaVO" parameterClass="int">
+	
+		SELECT * FROM QNA WHERE QNA_SEQ = #qna_seq# 
+		
+	</select>
+	
+	<!-- qna 검색하기 -->	
+	<select id="searchQna" resultClass="qnaVO" parameterClass="qnaVO">
+	
+		SELECT * FROM QNA WHERE 1=1
+	
+		<isNotEmpty property="qna_title">
+		AND QNA_TITLE LIKE '%' || #qna_title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty property="qna_content">
+		AND QNA_CONTENT LIKE '%' || #qna_content# || '%' 
+		</isNotEmpty>
+		<isNotEmpty property="mem_id">
+		AND MEM_ID LIKE '%' || #mem_id# || '%' 
+		</isNotEmpty>
+		
+		ORDER BY QNA_SEQ DESC
+	
+	</select>
+	
+	
+	<!-- 해당하는 번호의 notice가져오기 -->
+	<select id="myQnaList" resultClass="qnaVO" parameterClass="String">
+	
+		SELECT * FROM QNA WHERE MEM_ID = #mem_id# ORDER BY QNA_SEQ DESC
+		
+	</select>
+	
+	<!-- qna insert하기 -->
+	<insert id="insertQna" parameterClass="qnaVO">
+		INSERT INTO QNA
+		(
+			QNA_SEQ,
+			QNA_TITLE,
+			QNA_DATE,
+			QNA_CONTENT,
+			MEM_ID
+		)
+		VALUES 
+		(
+			qna_seq.nextval,
+			#qna_title#,
+			sysdate,
+			#qna_content#,
+			#mem_id#
+		)
+		<selectKey keyProperty="qna_seq" resultClass="int">
+			SELECT QNA_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+	
+	<!-- qna 객체를 삭제하기 -->
+	<delete id="deleteQna" parameterClass="int">
+		DELETE FROM QNA WHERE QNA_SEQ = #qna_seq#
+	</delete>
+	
+	<!-- qna객체 수정하기 -->	
+	<update id="updateQna" parameterClass="qnaVO">
+		UPDATE QNA SET QNA_TITLE=#qna_title#, QNA_CONTENT=#qna_content#
+		WHERE QNA_SEQ = #qna_seq#
+	</update>
+
+
+</sqlMap>

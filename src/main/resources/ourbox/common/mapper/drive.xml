@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="drive">
+
+
+	
+	<!-- 해당하는 room의 driveList가져오기  -->
+	<select id="driveList" resultClass="driveVO" parameterClass="int">
+	
+		SELECT * FROM DRIVE WHERE ROOM_SEQ = #room_seq# ORDER BY DRIVE_SEQ DESC
+		
+	</select>
+	
+	<!-- 폴더 생성하기 -->
+	<insert id="createDirectory" parameterClass="driveVO">
+		<selectKey keyProperty="drive_seq" resultClass="int">
+			SELECT DRIVE_SEQ.NEXTVAL FROM DUAL	
+		</selectKey>
+		INSERT INTO DRIVE 
+					( DRIVE_SEQ,
+					  DRIVE_PATH,
+					  DRIVE_NAME,
+					  DRIVE_TYPE,
+					  DRIVE_STATUS,
+					  ROOM_SEQ,
+					  DRIVE_DATE
+					)
+			VALUES ( #drive_seq#, 
+					 #drive_path#,
+					 #drive_name#,
+					 '0',
+					 '0',
+					 #room_seq#,  
+					 SYSDATE 
+					)	
+	</insert>
+	
+	<!-- 파일 업로드 -->
+	<insert id="fileUpload" parameterClass="driveVO">
+
+		<selectKey resultClass="int" keyProperty="drive_seq">
+			SELECT DRIVE_SEQ.NEXTVAL FROM DUAL 
+		</selectKey>
+		INSERT INTO DRIVE
+		 VALUES (#drive_seq#, #drive_path#, #drive_name#, #drive_size#,#drive_type#, '0', #room_seq#, SYSDATE) 
+	</insert>
+	
+	<!-- 다운로드파일/폴더  추출-->
+	<select id="selectDownloadDrive" parameterClass="int" resultClass="driveVO">
+		SELECT * FROM DRIVE WHERE DRIVE_SEQ = #drive_seq# 
+	</select>
+	
+	<!-- 파일 위치 변경 -->
+    <update id="moveFile" parameterClass="driveVO">
+    	UPDATE DRIVESET DRIVE_PATH = #drive_path#
+    	 WHERE DRIVE_SEQ = #drive_seq# 
+    </update>
+    
+    <!-- 파일 이름 변경 -->
+	<update id="renameFile" parameterClass="driveVO">
+		UPDATE DRIVE
+		   SET DRIVE_PATH = #drive_path#,
+		   	   DRIVE_NAME = #drive_name#
+		 WHERE DRIVE_SEQ = #drive_seq# 
+	</update>
+	
+	<!-- 드라이브 검색 -->
+	<select id="searchDriveList" parameterClass="String" resultClass="driveVO">
+		SELECT * FROM DRIVE
+		 WHERE DRIVE_NAME like '%'||#drive_name#||'%' 
+	</select>
+	
+	<!-- 하위 디렉터리 리스트 추출 -->
+	<select id="subDirList" parameterClass="String" resultClass="driveVO">
+		SELECT * 
+		  FROM DRIVE
+		 WHERE DRIVE_PATH LIKE #drive_path#||'%'
+	</select>
+	
+	
+	<!-- 파일 휴지통으로 버리기 -->
+	<update id="changeFileStatus" parameterClass="int">
+		UPDATE DRIVE
+		   SET DRIVE_STATUS = '1'
+		 WHERE DRIVE_SEQ = #drive_seq# 
+	</update>
+	
+	<!-- 휴지통 목록 출력 -->
+	<select id="garbageList" resultClass="driveVO" parameterClass="String">
+		SELECT * 
+		  FROM DRIVE 
+		 WHERE DRIVE_STATUS = '1'
+		   AND ROOM_SEQ IN (SELECT ROOM_SEQ
+		                      FROM ENTER
+		                     WHERE MEM_ID = #mem_id# )  
+	</select>
+	
+	<!-- 휴지통 비우기 -->
+	<delete id="deleteGarbages"  parameterClass="String">
+		DELETE DRIVE 
+		 WHERE DRIVE_STATUS='1'
+		   AND ROOM_SEQ IN (SELECT ROOM_SEQ
+		                      FROM ENTER
+		                     WHERE MEM_ID = #mem_id# ) 
+	</delete>
+	
+	
+	<!-- 휴지통에서 파일 복원 -->
+	<update id="recycleFile" parameterClass="int">
+		UPDATE DRIVE
+		   SET DRIVE_STATUS = '0'
+		 WHERE DRIVE_SEQ = #drive_seq# 
+	</update>
+	
+	<!-- 드라이브에 저장중인 파일의 모든 사이즈 -->
+	<select id="getUseDriveSize" parameterClass="String" resultClass="Integer">
+		SELECT SUM(DRIVE_SIZE)
+		  FROM DRIVE A, ENTER B
+	   	WHERE A.ROOM_SEQ = B.ROOM_SEQ
+		AND B.ENTER_STATUS = '0'
+		AND B.MEM_ID = #mem_id#
+	</select>
+	
+	<!-- 사용자가 사용중인 요금제의 최대용량 -->
+	<select id="getPlanSize" parameterClass="String" resultClass="Integer">
+		SELECT PLAN_STO_CAP
+		FROM PLAN A, USE B
+		WHERE A.PLAN_SEQ = B.PLAN_SEQ
+		AND B.USE_STATUS = '0'
+		AND B.MEM_ID = #mem_id#
+	</select>
+
+	
+	
+	
+</sqlMap>			

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="room">
+	<!-- 룸생성 -->
+	<insert id = "insertRoom" parameterClass="roomVO">
+		<selectKey keyProperty="room_seq" resultClass="int">
+			select room_seq.nextval from dual
+		</selectKey>
+		insert into room (room_seq, room_name, room_content)
+		values (room_seq.nextval, #room_name#, #room_content#)
+	</insert>
+	
+	<!-- 참여중인 룸 리스트  -->
+	<select id = "listRoom" resultClass="roomVO">
+		select *
+		from room 
+		where room_seq IN (select B.room_seq
+							from member A, enter B
+							where B.enter_status = '0'
+							and B.mem_id = #mem_id#)
+		order by 1
+	</select>
+	
+	<!-- 방의 번호를 입력하여 방을 선택 -->
+	<select id = "selectRoom" resultClass ="roomVO">
+		select *
+		from room
+		where room_seq = #room_seq#
+	</select>
+	
+	<!-- 그룹생성과 동시에 상태 표현해주는 enter테이블 생성 -->
+	<insert id ="insertEnter" parameterClass="enterVO">
+		insert into enter (room_seq, mem_id, enter_status)
+		values (#room_seq#, #mem_id#, '0')
+	</insert>
+	
+	<update id = "deleteRoom" parameterClass="enterVO">
+		update enter
+		set
+		enter_status='1'
+		where
+		room_seq = #room_seq#
+		and mem_id = #mem_id#
+	</update>
+	
+	<select id="getRoomName" parameterClass="int" resultClass="String">
+		select room_name
+		from room
+		where room_seq = #room_seq#
+	</select>
+	
+
+</sqlMap>

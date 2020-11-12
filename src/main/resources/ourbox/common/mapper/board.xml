@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="board">
+
+	<!-- 해당페이지의 board객체들 가져오기 -->
+	<select id="selectPage" parameterClass="map" resultClass="boardVO">
+	
+		select A.* from ( select rownum as rnaum, B.* 
+							from ( select * from board where room_seq = #room_seq# order by board_seq desc ) B
+										 <![CDATA[
+										where rownum <= #end# ) A
+										where rnaum >= #start#
+										]]>
+	</select>
+		
+	<!-- board의 갯수 가져오기 -->
+	<select id="getTotalCount" resultClass="int" parameterClass="int">
+		select count(*) from board where room_seq=#room_seq#
+	</select>
+	
+	
+	<!-- board의 세부내용 가져오기 -->
+	<select id="detailBoard" resultClass="boardVO" parameterClass="int">
+		SELECT * FROM BOARD WHERE BOARD_SEQ = #board_seq#
+	</select>
+	
+	
+	<!-- 게시글 insert하기 -->
+	<insert id="insertBoard" parameterClass="boardVO">
+		INSERT INTO BOARD
+		(
+			BOARD_SEQ,
+			BOARD_TITLE,
+			BOARD_DATE,
+			BOARD_CONTENT,
+			ATCH_FILE_SEQ,
+			ROOM_SEQ,
+			MEM_ID
+		)
+		VALUES 
+		(
+			board_seq.nextval,
+			#board_title#,
+			sysdate,
+			#board_content#,
+			#atch_file_seq#,
+			#room_seq#,
+			#mem_id#
+		)
+		<selectKey keyProperty="board_seq" resultClass="int">
+			SELECT BOARD_SEQ.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+	
+	<!-- board를 검색하기 -->
+	<select id="searchBoard" resultClass="boardVO" parameterClass="boardVO">
+	
+		SELECT * FROM BOARD WHERE 1=1
+		
+		<isNotEmpty property="board_title">
+		AND BOARD_TITLE LIKE '%' || #board_title# || '%' 
+		</isNotEmpty>
+		<isNotEmpty property="board_content">
+		AND BOARD_CONTENT LIKE '%' || #board_content# || '%' 
+		</isNotEmpty>
+		<isNotEmpty property="mem_id">
+		AND MEM_ID = #mem_id#
+		</isNotEmpty>
+	
+	</select>
+	
+	<!-- 게시글 삭제하기 -->
+	<delete id="deleteBoard" parameterClass="int">
+		DELETE FROM BOARD WHERE BOARD_SEQ = #board_seq#
+	</delete>
+	
+	<!-- board객체 수정하기 -->	
+	<update id="updateBoard" parameterClass="boardVO">
+		UPDATE BOARD SET BOARD_TITLE=#board_title#, BOARD_CONTENT=#board_content#, ATCH_FILE_SEQ=#atch_file_seq#
+		WHERE BOARD_SEQ = #board_seq#
+	</update>
+	
+	
+</sqlMap>			
+
+
+
+
+

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="member">
+
+	
+	<insert id = "insertMember" parameterClass ="memberVO">
+		insert into member ( mem_id, mem_pass, mem_nickname, mem_name, mem_tel, mem_zip, mem_addr1, mem_addr2, mem_bir, mem_status, mem_profile )
+		values (#mem_id#, #mem_pass#, #mem_nickname#, #mem_name#, #mem_tel#, #mem_zip#, #mem_addr1#, #mem_addr2#, #mem_bir#, '0', null )
+	</insert>
+	
+	
+	<select id = "findId" parameterClass="memberVO" resultClass="memberVO">
+		select *
+		from member
+		where mem_name = #mem_name#
+		and mem_tel = #mem_tel#
+	</select>
+	
+	<update id = "deleteMember" parameterClass="String">
+		update member
+		set mem_status = '1'
+		where mem_id = #mem_id#
+	</update>
+	
+	<update id="updatePw" parameterClass="memberVO">
+	update member set 
+	mem_pass = #mem_pass# 
+	where mem_id = #mem_id# 
+	</update>
+	
+	<select id="getMember" parameterClass="String" resultClass="memberVO">
+		select *
+		from member
+		where mem_id = #mem_id#
+	</select>
+	
+	<select id = "findPw" parameterClass="memberVO" resultClass="memberVO">
+		select *
+		from member
+		where mem_id = #mem_id#
+		and mem_name = #mem_name#
+		and mem_tel = #mem_tel#
+	
+	</select>
+	
+	<select id ="loginMember" parameterClass="memberVO" resultClass="memberVO">
+		select *
+		from member
+		where mem_id = #mem_id#
+		and mem_pass = #mem_pass#
+		and mem_status = '0'
+	</select>
+	
+	<update id = "updateMember" parameterClass="memberVO" >
+		update member set
+		<dynamic prepend="" close="">
+			<isNotNull property="mem_pass" prepend="">
+				mem_pass = #mem_pass#,
+			</isNotNull>
+			<isNotNull property="mem_nickname" prepend="">
+		 	    mem_nickname = #mem_nickname#,
+			</isNotNull>
+	 	    <isNotNull property="mem_tel" prepend="">
+		 	    mem_tel = #mem_tel#,
+	 	    </isNotNull>
+	 	    <isNotNull property="mem_zip" prepend="">
+		 	    mem_zip = #mem_zip#	,
+	 	    </isNotNull>
+	 	    <isNotNull property="mem_addr1" prepend="">
+		 	    mem_addr1 = #mem_addr1#,
+	 	    </isNotNull>
+	 	    <isNotNull property="mem_addr2" prepend="">
+		 	    mem_addr2 = #mem_addr2#
+	 	    </isNotNull>
+	 	    <isNotNull property="mem_profile" prepend="">
+		 	    mem_profile = #mem_profile#
+	 	    </isNotNull>
+		</dynamic>
+		where mem_id = #mem_id#
+	</update>
+	
+	
+	<select id="memberList" resultClass="memberVO">
+		select * from member
+	</select>
+	
+	<select id="searchMember" parameterClass="enterVO" resultClass="memberVO">
+		select mem_id
+		from member 
+		where mem_id like '%' || #mem_id# || '%'
+		and mem_status = '0'
+		
+		minus
+		
+		select mem_id
+		from enter
+		where mem_id like '%' || #mem_id# || '%'
+		and room_seq = #room_seq#
+	</select>
+	
+	<insert id = "enterGroup" parameterClass="enterVO">
+		insert into enter (room_seq, mem_id, enter_status)
+		values (#room_seq#, #mem_id#, '0')
+	</insert>
+	
+	<select id="memberselectPlan" parameterClass="int">
+	select *
+		from member A, use B, plan C
+		where A.mem_id = B.mem_id
+		and C.plan_seq = b.plan_seq
+		and B.plan_seq = #plan_seq#
+		and C.plan_status = '0'
+	</select>
+	
+	<update id="profile" parameterClass="memberVO">
+		update member set mem_profile = #mem_profile# where mem_id = #mem_id#
+	</update>
+	
+	<select id="chatMemProfile" parameterClass="int" resultClass="memberVO">
+		 select A.mem_profile, A.mem_id from member A, enter B 
+		 where B.room_seq =#room_seq# and B.mem_id = A.mem_id
+	</select>
+	
+</sqlMap>			
+
+
+
+
+

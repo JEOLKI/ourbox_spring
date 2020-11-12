@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarm">
+
+
+	<select id="alarmList" resultClass="alarmVO" parameterClass="String">
+		SELECT	* 
+		FROM	ALARM
+		WHERE	MEM_ID = #mem_id#
+		ORDER BY ALARM_SEQ DESC
+	</select>
+	
+	<!-- 알람 insert하기 -->
+	<insert id="insertAlarm" parameterClass="alarmVO">
+		INSERT INTO ALARM
+		(
+			ALARM_SEQ,
+			ALARM_CONTENT,
+			MEM_ID
+		)
+		VALUES 
+		(
+			alarm_seq.nextval,
+			#alarm_content#,
+			#mem_id#
+		)
+		<selectKey keyProperty="alarm_seq" resultClass="int">
+			SELECT alarm_seq.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+	
+	<!-- 알람  삭제하기 -->
+	<delete id="deleteAlarm" parameterClass="int">
+		DELETE FROM ALARM WHERE ALARM_SEQ = #alarm_seq#
+	</delete>
+	
+	<!-- 알람전체 삭제하기 -->
+	<delete id="deleteAllAlarm" parameterClass="String">
+		DELETE FROM ALARM WHERE MEM_ID = #mem_id#
+	</delete>
+	
+	
+</sqlMap>			
