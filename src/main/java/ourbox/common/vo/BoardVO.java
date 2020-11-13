@@ -13,7 +13,7 @@ public class BoardVO {
 	private int atch_file_seq;
 	private String mem_id;
 	private String board_status;
-
+	
 	public int getBoard_seq() {
 		return board_seq;
 	}

@@ -30,26 +30,24 @@ public class BoardServiceImpl implements IBoardService {
 	
 	@Override
 	public Map<String , Object> detailBoard(int board_seq) {
-		
 		BoardVO detailBoard = boardDao.detailBoard(board_seq);
-		
 		AtchFileVO atchFile = boardDao.selectAtchFile(detailBoard.getAtch_file_seq());
-		
 		Map<String , Object> map = new HashedMap<String, Object>();
 		map.put("detailBoard", detailBoard);
 		map.put("atchFile", atchFile);
-		
 		return map;
 	}
 	
 	@Override
 	public int insertBoard(Map<String, Object> map) {
 		
-		int atch_file_seq = boardDao.insertAtchFile((AtchFileVO) map.get("atchFileVO"));
+		int atch_file_seq = 0;
+		if(map.get("atchFileVO") == null) {
+			atch_file_seq = boardDao.insertAtchFile((AtchFileVO) map.get("atchFileVO"));
+		}
 		
 		BoardVO board = (BoardVO) map.get("boardVO");
 		board.setAtch_file_seq(atch_file_seq);
-		
 		return boardDao.insertBoard(board);
 	}
 	
@@ -64,7 +62,10 @@ public class BoardServiceImpl implements IBoardService {
 	}
 
 	@Override
-	public int updateBoard(BoardVO board) {
+	public int updateBoard(Map<String, Object> map) {
+		int atch_file_seq = boardDao.insertAtchFile((AtchFileVO) map.get("atchFileVO"));
+		BoardVO board = (BoardVO) map.get("boardVO");
+		board.setAtch_file_seq(atch_file_seq);
 		return boardDao.updateBoard(board);
 	}
 	
@@ -77,11 +78,5 @@ public class BoardServiceImpl implements IBoardService {
 	public AtchFileVO selectAtchFile(int atch_file_seq){
 		return boardDao.selectAtchFile(atch_file_seq);
 	}
-
-
-
-
-	
-	
 
 }

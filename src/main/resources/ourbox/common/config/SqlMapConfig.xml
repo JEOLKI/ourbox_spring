@@ -12,7 +12,7 @@
 	
 	<!-- ibatis를 처리하기 위한 환경설정 부분 -->
 	<settings cacheModelsEnabled="true" enhancementEnabled="true"
-		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="2"
 		maxTransactions="5" useStatementNamespaces="true" />
 
 	<!-- 
@@ -54,7 +54,6 @@
 			<property name="JDBC.Password" value="${password}" />
 			<property name="Pool.MaximumActionConnections" value="2"/>
 			<property name="Pool.MaximumIdleConnections" value="2"/>
-
 			
 		</dataSource>
 	</transactionManager>

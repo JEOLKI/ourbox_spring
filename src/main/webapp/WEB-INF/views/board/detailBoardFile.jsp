@@ -1,12 +1,13 @@
-<%@page import="ourbox.common.vo.AtchFileVO"%>
-<%@page import="ourbox.common.vo.BoardVO"%>
+<%@ page import="ourbox.common.vo.AtchFileVO"%>
+<%@ page import="ourbox.common.vo.BoardVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
     
 <%
 	BoardVO detailBoard = (BoardVO) request.getAttribute("detailBoard");
 	AtchFileVO atchFile = (AtchFileVO) request.getAttribute("atchFile");
-	
 	String logId = (String) request.getAttribute("logId");
 	
 	int board_seq = detailBoard.getBoard_seq();
@@ -15,12 +16,9 @@
 	String board_content = detailBoard.getBoard_content().replaceAll("\r", "").replaceAll("\n", "<br>");
 	String mem_id = detailBoard.getMem_id();
 	String board_date = detailBoard.getBoard_date();
-	
-%>    
+%>      
     
-    
-    
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -28,7 +26,6 @@
 
 <link rel="stylesheet" href="/ourbox/css/public.css">
 <link rel="stylesheet" href="/ourbox/css/rightmouse.css">
-<script src="/ourbox/js/boardReply.js"></script>
 <script src="/ourbox/js/jquery-3.5.1.min.js"></script>
 <script src="/ourbox/js/rightmouse.js"></script>
 <link rel="stylesheet" href="/ourbox/css/board.css">
@@ -53,17 +50,21 @@
 		//답변 등록버튼 클릭하면
 		$('#insertReply').on('click', function() {
 			
-			board_seq = $(this).attr('seq');
 			replyContent = $('#replyContent').val();
-			logId = $(this).attr('logId');
 			
-			reply = {
-						"board_seq" : board_seq,
-						"reply_content" : replyContent,
-						"mem_id" : logId
-					}
-			
-			insertReply(reply);
+			$.ajax({
+				url : '/ourbox/InsertReplyController',
+				data : {board_seq : board_seq,
+						reply_content : replyContent,
+						mem_id : logId
+						},
+				type : 'get',
+				dataType : 'json',
+				success : function(res) {
+					replyList(board_seq);
+
+				}
+			})	
 			
 			$('#replyContent').val("");
 		})
@@ -72,9 +73,16 @@
 		$('#boardList').on('click', '.deleteReply', function() {
 			
 			reply_seq = $(this).attr('seq');
-			board_seq = $(this).attr('qna');
 			
-			deleteReply(reply_seq);
+			$.ajax({
+				url : '/ourbox/DeleteReplyController',
+				data : {reply_seq : reply_seq},
+				type : 'get',
+				dataType : 'json',
+				success : function(res) {
+					replyList(board_seq);
+				}
+			})
 			
 		})
 		
@@ -99,31 +107,54 @@
 		// 답변수정후 등록버튼 클릭하면
 		$('#boardList').on('click', '.insertUpdate', function() {
 			
-			board_seq = $(this).attr('qna');
 			reply_seq = $(this).attr('seq');
 			
 			reply_content = $('#newReply').val();
 			
 			reply = {
-						"board_seq" : board_seq,
-						"reply_content" : reply_content,
-						"reply_seq" : reply_seq,
-						}
+						board_seq : board_seq,
+						reply_content : reply_content,
+						reply_seq : reply_seq,
+					}
 			
-			insertUpdate(reply);
+			$.ajax({
+				url : '/ourbox/UpdateReplyController',
+				data : reply,
+				type : 'get',
+				dataType : 'json',
+				success : function(res) {
+					replyList(board_seq);
+				}
+			})
 			
 		})
 		
 		
 		// 삭제버튼 누르면
 		$('#deleteBoard').on('click', function() {
-			deleteBoard(board_seq);
+
+			$.ajax({
+				url : '/ourbox/board/delete',
+				type : 'get',
+				data : {board_seq : board_seq},
+				dataType : 'json',
+				success : function(res) {
+					
+					if(res.result == 0) {
+						alert("댓글이 달려있어 삭제할 수 없습니다.");
+					}else {
+						location.href="/ourbox/board/view?memId="+logId+"&roomSeq="+room_seq+"";
+					}
+					
+				}
+			})
 		})
 		
 		// 글 수정 버튼을 누르면
 		$('#updateBoard').on('click', function() {
-			location.href = '/ourbox/UpdateBoardController?logId='+logId+'&mem_id='+mem_id+'&room_seq='+room_seq+'&board_seq='+board_seq+'&board_title='+board_title+'&board_content='+board_content+''
+			location.href="/ourbox/board/update?board_seq=" + board_seq + "";
 		})
+		
 		
 		$('#print').on('click', function() {
 			$('.contextmenu').hide();
@@ -137,7 +168,7 @@
 var replyList = function(board_seq) {
 	$.ajax({
 		url : '/ourbox/ReplyListController',
-		data : {"board_seq" : board_seq},
+		data : {board_seq : board_seq},
 		type : 'get',
 		dataType : 'json',
 		success : function(data) {
@@ -172,11 +203,6 @@ var replyList = function(board_seq) {
 			$('#replyList').empty();
 			$('#replyList').append(code);
 			
-			
-			
-		},
-		error : function(xhr) {
-			alert("상태11 : " + xhr.status)
 		}
 	})
 	
@@ -201,33 +227,35 @@ var replyList = function(board_seq) {
 		<table id='contentTable'>
 			<tr id='tr1'>
 				<td class='tdMenu'> 제목 : </td>
-				<td id='board_title' seq="<%= board_seq %>" ><%=board_title %></td>
+				<td id='board_title' seq="${detailBoard.board_seq }" >${detailBoard.board_title }</td>
 				<td class='tdMenu'> 작성자 : </td>
-				<td id='writer'><%= mem_id %></td>
+				<td id='writer'>${detailBoard.mem_id }</td>
 				<td class='tdMenu'> 작성일자 : </td>
-				<td id='date'> <%= board_date %></td>
+				<td id='date'>${detailBoard.board_date }</td>
 			</tr>
 			<tr>
 				<td class='tdMenu content'>  내용 : </td>
 				<td id='board_content' colspan='5'><%= board_content %></td>
-			</tr>
-		<% if(atchFile.getAtch_file_seq() != 0){ %>
+			</tr> 
+			
+			<% if(atchFile.getAtch_file_seq() != 0){ %>
 			<tr>
 				<td class='tdMenu'>첨부파일:</td>
 				<td id='atch'>
-					<a href="<%=request.getContextPath() %>/member/fileDownload?atch_file_seq=<%= atchFile.getAtch_file_seq()%>">
+					<a href="${pageContext.request.contextPath }/board/fileDownload?atch_file_seq=<%= atchFile.getAtch_file_seq()%>">
 							<%= atchFile.getAtch_file_name()%>
 					</a>
 				</td>
 			</tr>
-		<% } %>
+			<% } %>
+			
 			<tr id='tr2'>
 				<td class='tdMenu' id="reMenu">  댓    글 : </td>
 				<td id='replyList' colspan='5'></td>
 			</tr>
 			<tr>
 				<td colspan='6'> <textarea id='replyContent' rows='5' cols='70'></textarea>
-				<button id='insertReply' type='button' logId=<%=logId %> seq="<%= board_seq %>" >등 록</button>
+				<button id='insertReply' type='button' >등 록</button>
 				</td>
 			</tr>
 		</table><br>
@@ -236,13 +264,9 @@ var replyList = function(board_seq) {
 		<div id="but">
 			<button class='backlist' type='button' >목록으로</button>&nbsp;&nbsp;&nbsp;&nbsp;
 			
-			
 			<% if(detailBoard.getMem_id().equals(logId)){ %>
-			
-			<button id='updateBoard' type='button'> 글 수정 </button>&nbsp;&nbsp;&nbsp;&nbsp;
-			
+				<button id='updateBoard' type='button'> 글 수정 </button>&nbsp;&nbsp;&nbsp;&nbsp;
 			<% } %>
-			
 			
 			<button id='deleteBoard' type='button'> 글 삭제 </button>
 		</div>

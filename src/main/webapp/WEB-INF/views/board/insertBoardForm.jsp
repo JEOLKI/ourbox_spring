@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
    
-    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,14 +13,10 @@
 <script type="text/javascript">
 
 	$(function() {
-		
 		// 목록으로 버튼 누르면
 		$('.backlist').on('click', function() {
-			
-			location.href="/board/view?memId=${param.mem_id }&roomSeq=${param.room_seq }";
-			
+			location.href="/ourbox/board/view?memId=${param.mem_id }&roomSeq=${param.room_seq }";
 		})
-		
 	})
 
 </script>
@@ -31,14 +26,13 @@
 	.hide{
 		display: none;
 	}
-	
 
 </style>
 
 
 </head>
 <body>
-
+	${param.room_seq }${param.room_seq }${param.room_seq }
 	<div id='box'>
 		<form action="/ourbox/board/insert" method="post" enctype="multipart/form-data" >
 			<table>
@@ -54,8 +48,8 @@
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;내&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;용 :&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea name='board_content' class='textareaContent' id='insertContent' rows='5' cols='150'></textarea></td>
 				</tr>
 			</table>
-			<input class='hide' type="text" name="mem_id" value="${param.mem_id }" id="memIdHidden">
-			<input class='hide' type="text" name="room_seq" value="${param.room_seq }" id="roomSeqHidden">
+				<input class='hide' type="text" name="mem_id" value="${param.mem_id }" id="mem_id">
+				<input class='hide' type="text" name="room_seq" value="${param.room_seq }" id="room_seq">
 			<div id='but'>
 			<button class='backlist' type='button'>목록으로</button>&nbsp;&nbsp;&nbsp;&nbsp;
 			<input type="submit" value="글 등록">

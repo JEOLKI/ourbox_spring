@@ -2,6 +2,8 @@ package ourbox.reply.controller;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,8 @@ import ourbox.reply.service.IReplyService;
 @Controller
 public class ReplyController {
 
+	private static final Logger logger = LoggerFactory.getLogger(ReplyController.class);
+	
 	@Resource(name = "replyService")
 	private IReplyService replyService;
 
@@ -23,6 +27,8 @@ public class ReplyController {
 
 	@RequestMapping("/InsertReplyController")
 	public String replyRegist(ReplyVO replyVO, Model model) {
+		
+		logger.debug("ReplyVO : {}", replyVO);
 		model.addAttribute("result", replyService.insertReply(replyVO));
 		return "jsonView";
 	}

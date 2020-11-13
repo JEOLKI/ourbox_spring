@@ -122,9 +122,7 @@ var insertReply = function(reply) {
 		error : function(xhr) {
 			alert("상태44 : " + xhr.status)
 		}
-	})
-	
-	
+	})	
 }
 
 var replyList = function(board_seq) {

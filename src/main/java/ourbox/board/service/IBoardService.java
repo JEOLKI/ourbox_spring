@@ -3,8 +3,6 @@ package ourbox.board.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Service;
-
 import ourbox.common.vo.AtchFileVO;
 import ourbox.common.vo.BoardVO;
 
@@ -55,10 +53,10 @@ public interface IBoardService {
 	
 	/**
 	 * 하나의 BoardVO 자료를 이용하여 DB를 update하는 메서드
-	 * @param board update할 게시글의 정보가 들어 있는 BoardVO객체
+	 * @param map update할 게시글의 정보가 들어 있는 BoardVO객체
 	 * @return 작업성공 : 1, 작업실패 : 0
 	 */
-	public int updateBoard(BoardVO board);
+	public int updateBoard(Map<String, Object> map);
 	
 	public int insertAtchFile(AtchFileVO atchFile);
 

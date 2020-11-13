@@ -1,6 +1,5 @@
 package ourbox.reply.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,9 +7,6 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-
-import ourbox.common.util.SqlMapClientFactory;
 import ourbox.common.vo.ReplyVO;
 
 @Repository("replyRepository")

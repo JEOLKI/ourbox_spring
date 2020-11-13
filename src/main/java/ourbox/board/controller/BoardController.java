@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import ourbox.board.service.IBoardService;
@@ -26,9 +27,9 @@ import ourbox.common.vo.BoardVO;
 @RequestMapping("/board")
 @Controller
 public class BoardController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
-	
+
 	@Resource(name = "boardService")
 	private IBoardService boardService;
 
@@ -38,7 +39,8 @@ public class BoardController {
 	}
 
 	@RequestMapping("/list")
-	public String memberList(int page, int room_seq, Model model) {
+	public String memberList(@RequestParam(name = "page", defaultValue = "1", required = false) int page, int room_seq,
+			Model model) {
 
 		int perlist = 10; // 페이지당 출력개수
 
@@ -101,19 +103,19 @@ public class BoardController {
 		return "DownloadView";
 	}
 
-	@RequestMapping(path = "/insert", method = {RequestMethod.GET} )
+	@RequestMapping(path = "/insert", method = { RequestMethod.GET })
 	public String boardInsert() {
 		return "board/insertBoardForm";
 	}
 
-	@RequestMapping(path = "/insert", method = {RequestMethod.POST})
-	public String boardInsesrt(BoardVO boardVO, MultipartFile file) {
-		
+	@RequestMapping(path = "/insert", method = { RequestMethod.POST })
+	public String boardInsesrt(BoardVO boardVO, MultipartFile file, Model model) {
+
 		logger.debug("boardVO : {}", boardVO);
-		
+
 		String filePath = "";
 		String realFilename = "";
-		if( file.getSize() > 0 ) {
+		if (file.getSize() > 0) {
 			String filename = UUID.randomUUID().toString();
 			realFilename = file.getOriginalFilename();
 			String extension = FileUploadUtil.getExtension(realFilename);
@@ -125,65 +127,108 @@ public class BoardController {
 				e.printStackTrace();
 			}
 		}
-		
+
 		AtchFileVO atchFileVO = new AtchFileVO(realFilename, filePath);
+
+		Map<String, Object> map = new HashedMap<String, Object>();
+		map.put("atchFileVO", atchFileVO);
+		map.put("boardVO", boardVO);
+
+		int insertCnt = 0;
+		try {
+			insertCnt = boardService.insertBoard(map);
+			
+			// 1건이 입력되었을 때 : 정상 - memberList 페이지로 이동
+			if (insertCnt > 0) {
+				return "redirect:/board/Detail?board_seq=" + boardVO.getBoard_seq() +"&mem_id="+ boardVO.getMem_id();
+			}
+		} catch (Exception e) {
+		}
+
+		// 1건이 아닐때 : 비정상
+		return "board/insertBoardForm";
+	}
+
+	@RequestMapping(path = "/update", method = { RequestMethod.GET })
+	public String boardUpdate(int board_seq, Model model) {
+		Map<String, Object> map = boardService.detailBoard(board_seq);
+		model.addAttribute("boardVO", (BoardVO) map.get("detailBoard"));
+		logger.debug("boardVO : {}", (BoardVO) map.get("detailBoard"));
+		return "board/updateBoardForm";
+	}
+
+	@RequestMapping(path = "/update", method = { RequestMethod.POST })
+	public String boardUpdate(BoardVO boardVO, MultipartFile file, Model model) {
+		logger.debug("boardVO : {}", boardVO);
 		
+		AtchFileVO atchFileVO = null;
+		if( file.getSize() > 0 ) {
+			String realFilename= "";
+			String filePath ="";
+			realFilename = file.getOriginalFilename();
+			String filename = UUID.randomUUID().toString();
+			String extension = FileUploadUtil.getExtension(realFilename);
+			File uploadFile = new File("D:\\attachment\\" + filename + "." + extension);
+			filePath = "D:\\attachment\\" + filename + "." + extension;
+
+			try {
+				file.transferTo(uploadFile);
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			atchFileVO = new AtchFileVO(realFilename, filePath);
+		} else {
+			Map<String, Object> dbmap = boardService.detailBoard(boardVO.getBoard_seq());
+			atchFileVO = (AtchFileVO) dbmap.get("atchFile");
+		}
 		Map<String, Object> map = new HashedMap<String, Object>();
 		map.put("atchFileVO", atchFileVO);
 		map.put("boardVO", boardVO);
 		
-		int insertCnt = 0;
+		int updateCnt = 0;
 		try {
-			insertCnt = boardService.insertBoard(map);
+			updateCnt = boardService.updateBoard(map);
 
 			// 1건이 입력되었을 때 : 정상 - memberList 페이지로 이동
-			if ( insertCnt > 1 ) {
-				return "redirect:/board/view";
-			} 
+			if (updateCnt == 1) {
+				model.addAttribute("board_seq", boardVO.getBoard_seq());
+				model.addAttribute("mem_id", boardVO.getMem_id());
+				return "redirect:/board/Detail";
+			}
 		} catch (Exception e) {
 		}
 		
 		// 1건이 아닐때 : 비정상
-		return "board/insertBoardForm";
-	}
-	
-	@RequestMapping(path = "/update", method = {RequestMethod.GET})
-	public String boardUpdate() {
-		return "board/updateBoardForm";
+		return "board/update?board_seq=" + boardVO.getBoard_seq();
 	}
 
 	@RequestMapping(path = "/delete")
 	public String boardDelete(int board_seq, Model model) {
-
-		int count = boardService.deleteBoard(board_seq);
-		
-		model.addAttribute("result", count);
-		
+		model.addAttribute("result", boardService.deleteBoard(board_seq));
 		return "jsonView";
 	}
-	
+
 	@RequestMapping(path = "/search")
 	public String boardSearch(String searchOption, String searchKeyWord, Model model) {
-    	
-    	// board객체에 정보 저장하기
-    	BoardVO board = new BoardVO();
-    			
-    	if (searchOption.equals("글제목만")) {
-    		board.setBoard_title(searchKeyWord);
-    	}else if (searchOption.equals("글내용만")) {
-    		board.setBoard_content(searchKeyWord);
-    	}else if (searchOption.equals("글제목 + 내용")) {
-    		board.setBoard_title(searchKeyWord);
-    		board.setBoard_content(searchKeyWord);
-    	}else if (searchOption.equals("작성자")) {
+
+		// board객체에 정보 저장하기
+		BoardVO board = new BoardVO();
+
+		if (searchOption.equals("글제목만")) {
+			board.setBoard_title(searchKeyWord);
+		} else if (searchOption.equals("글내용만")) {
+			board.setBoard_content(searchKeyWord);
+		} else if (searchOption.equals("글제목 + 내용")) {
+			board.setBoard_title(searchKeyWord);
+			board.setBoard_content(searchKeyWord);
+		} else if (searchOption.equals("작성자")) {
 			board.setMem_id(searchKeyWord);
 		}
-    			
-    	List<BoardVO> boardList = boardService.searchBoard(board);
-    	model.addAttribute("boardList", boardList);
-    	return "jsonView";
-	
+
+		List<BoardVO> boardList = boardService.searchBoard(board);
+		model.addAttribute("boardList", boardList);
+		return "jsonView";
+
 	}
-	
 
 }

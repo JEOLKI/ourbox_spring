@@ -27,7 +27,7 @@
        <appender-ref ref="STDOUT" />
    </root> -->
    
-<!--    	<logger name="jdbc.connection" >
+    <logger name="jdbc.connection" >
         <level value="off"/>
         <appender-ref ref="STDOUT"/>
     </logger>
@@ -50,7 +50,7 @@
     <logger name="jdbc.resultset" additivity="false">
         <level value="debug"/>
         <appender-ref ref="STDOUT"/>
-    </logger> -->
+    </logger>
    
    
 </configuration>

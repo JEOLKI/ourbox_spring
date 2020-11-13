@@ -58,19 +58,50 @@
 		$('#searchBoard').on('click', function(){
 			searchOption = $('#selectBox option:selected').val();
 			searchKeyWord = $('#searchKeyWord').val();
-			searchElement = { 
-								"searchOption" : searchOption,
-							 	"searchKeyWord" : searchKeyWord
-							}
-			searchBoard(searchElement);
+
+			$.ajax({
+				url : '/ourbox/board/search',
+				data : { 
+						searchOption : searchOption,
+					 	searchKeyWord : searchKeyWord
+						},
+				type : 'get',
+				dataType : 'json',
+				success : function(res) {
+
+					console.log(res);
+					
+					code = "<table class='list'>"
+					code += "  <tr id='tr1'>"
+					code += "    <td id='titleTd'>제목</td>"
+					code += "    <td id='writerTd'>작성자</td>"
+					code += "	 <td id='dateTd'>작성일자</td>"
+					code += "  </tr>"
+							
+					$.each(res.boardList, function(i, v) {
+						code += "  <tr class='trtab'>"
+						code += "    <td class='board_title' seq='"+ v.board_seq +"'>"+v.board_title+"</td>"
+						code += "    <td>"+v.mem_id+"</td>"
+						code += "	 <td>"+v.board_date+"</td>"
+						code += "  </tr>"
+					})
+					code += "</table><br>"
+					code += "<div id='but'>"	
+					code += "<button class='backlist' type='button'>목록으로</button>&nbsp;&nbsp;&nbsp;&nbsp;"
+					code += "</div>"	
+						
+					$('#boardList').empty();
+					$('#boardList').append(code);
+				}
+			})
+			
+			
 			$('#btngroup1').hide();
 		})
 		
 		// 목록으로 버튼 누르면
 		$('#boardList').on('click', '.backlist', function() {
-			
-			location.href="/board/view?memId="+mem_id+"&roomSeq="+room_seq;
-			
+			location.href="/ourbox/board/view?memId="+mem_id+"&roomSeq="+room_seq;
 			$('#btngroup1').show();
 			
 		})
@@ -131,7 +162,7 @@ var boardPageList = function(cpage) {
 			
 			//다음버튼 출력
 			if(endpage < totalpage) {
-				pager += '  <span class="next" ><a href="#">Next</a></span>';
+				pager += '<span class="next" ><a href="#">Next</a></span>';
 			}
 			
 			$(pager).appendTo('#btngroup1');
